@@ -27,7 +27,11 @@ WiFiUDP udp;
 #define NUM_LEDS 5
 #define DATA_PIN 13
 CRGBArray<NUM_LEDS> leds;
-uint8_t gHue = 0;
+
+int HUE = 0;
+int SATURATION = 0;
+int BRIGHTNESS = 0;
+#define MAX_BRIGHTNESS 200
 
 void setup(){
   // Initilize hardware serial:
@@ -50,10 +54,15 @@ void loop(){
         bundle.fill(udp.read());
       }
       if (!bundle.hasError()) {
-        bundle.dispatch("/4/multitoggle/1/1", led_on);
-        bundle.dispatch("/4/multitoggle/2/1", led_off);
-        bundle.dispatch("/4/multitoggle/1/2", led_fadein);
-        bundle.dispatch("/4/multitoggle/2/2", led_fadeout);
+        bundle.dispatch("/2/push1", led_on);
+        bundle.dispatch("/2/push2", led_off);
+        bundle.dispatch("/2/push3", led_fadein);
+        bundle.dispatch("/2/push4", led_fadeout);
+        bundle.dispatch("/2/push12", change_color_random);
+        bundle.dispatch("/2/push13", change_color_white);
+        bundle.dispatch("/2/push14", change_color_red);
+        bundle.dispatch("/2/push15", change_color_green);
+        bundle.dispatch("/2/push16", change_color_blue);
         bundle.empty();
       }
     }
