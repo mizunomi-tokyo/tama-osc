@@ -1,15 +1,29 @@
 /*
- *  This sketch sends random data over UDP on a ESP32 device
- *
+ *  mizunomi.tokyo <843@mizunomi.tokyo>
+ *  Copyright (C) 2018 Kazumi Egawa <arnerican.f0otboy@gmail.com>
+ *  
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+
 #include <WiFi.h>
 #include <WiFiUdp.h>
 #include <OSCMessage.h>
 #include <FastLED.h>
 
 // WiFi network name and password:
-const char * networkName = "elecom2g-bf3586";
-const char * networkPswd = "1243665439571";
+const char * networkName = "elecom2g-egapyon-1";
+const char * networkPswd = "egaegapyonpyon";
 
 //IP address to send UDP data to:
 // either use the ip address of the server or 
@@ -27,13 +41,18 @@ WiFiUDP udp;
 #define NUM_LEDS 5
 #define DATA_PIN 13
 CRGBArray<NUM_LEDS> leds;
-
-
 int TRIGGER = 0;
 int SECOND = 0;
-int BRIGHTNESS = 0;
+int BRIGHTNESS = 100;
 int HUE = 0;
-int SATURATION = 0;
+int SATURATION = 255;
+
+//color shows ball's ID
+//
+// THIS BALL'S ID IS 0
+//
+const int ID = 11;
+int ONOLE = (ID - 10) * 25;
 
 void setup(){
   // Initilize hardware serial:
@@ -46,8 +65,15 @@ void setup(){
 }
 
 void loop(){
-  //only send data when connected
-  if(connected){
+  if(!connected){
+    leds[3] = CHSV(ONOLE, 255, 50);
+    FastLED.show();
+    FastLED.delay(1000);
+    leds[3] = CHSV(0,0,0);
+    FastLED.show();
+    FastLED.delay(1000);
+  }
+  else{
     OSCMessage message;
     int size = udp.parsePacket();
 
@@ -56,11 +82,16 @@ void loop(){
         message.fill(udp.read());
       }
       if (!message.hasError()) {
-        message.dispatch("/on", led_on);
-        message.dispatch("/off", led_off);
-        message.dispatch("/fadein", led_fadein);
-        message.dispatch("/fadeout", led_fadeout);
-        message.dispatch("/flash", flash);
+        message.dispatch("/11/on", led_on);
+        message.dispatch("/11/off", led_off);
+        message.dispatch("/11/fadein", led_fadein);
+        message.dispatch("/11/fadeout", led_fadeout);
+        message.dispatch("/11/flash", flash);
+        message.dispatch("/all/on", led_on);
+        message.dispatch("/all/off", led_off);
+        message.dispatch("/all/fadein", led_fadein);
+        message.dispatch("/all/fadeout", led_fadeout);
+        message.dispatch("/all/flash", flash);
         message.empty();
       }
     }
@@ -85,9 +116,9 @@ void connectToWiFi(const char * ssid, const char * pwd){
 void WiFiEvent(WiFiEvent_t event){
     switch(event) {
       case SYSTEM_EVENT_STA_GOT_IP:
-          //When connected set 
+          //When connected set
           Serial.print("WiFi connected! IP address: ");
-          Serial.println(WiFi.localIP());  
+          Serial.println(WiFi.localIP());
           //initializes the UDP state
           //This initializes the transfer buffer
           udp.begin(WiFi.localIP(),udpPort);

@@ -1,15 +1,29 @@
 /*
- *  This sketch sends random data over UDP on a ESP32 device
- *
+ *  mizunomi.tokyo <843@mizunomi.tokyo>
+ *  Copyright (C) 2018 Kazumi Egawa <arnerican.f0otboy@gmail.com>
+ *  
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3 of the License, or
+ *  (at your option) any later version.
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+
 #include <WiFi.h>
 #include <WiFiUdp.h>
 #include <OSCMessage.h>
 #include <FastLED.h>
 
 // WiFi network name and password:
-const char * networkName = "elecom2g-bf35cb";
-const char * networkPswd = "1243665439640";
+const char * networkName = "elecom2g-egapyon-1";
+const char * networkPswd = "egaegapyonpyon";
 
 //IP address to send UDP data to:
 // either use the ip address of the server or 

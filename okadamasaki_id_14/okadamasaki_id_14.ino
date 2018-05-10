@@ -51,8 +51,8 @@ int SATURATION = 255;
 //
 // THIS BALL'S ID IS 0
 //
-const int ID = 7;
-int ONOLE = ID * 25;
+const int ID = 14;
+int ONOLE = (ID - 10) * 25;
 
 void setup(){
   // Initilize hardware serial:
@@ -68,9 +68,10 @@ void loop(){
   if(!connected){
     leds[3] = CHSV(ONOLE, 255, 50);
     FastLED.show();
-    FastLED.delay(2000);
+    FastLED.delay(1000);
     leds[3] = CHSV(0,0,0);
     FastLED.show();
+    FastLED.delay(1000);
   }
   else{
     OSCMessage message;
@@ -81,11 +82,11 @@ void loop(){
         message.fill(udp.read());
       }
       if (!message.hasError()) {
-        message.dispatch("/7/on", led_on);
-        message.dispatch("/7/off", led_off);
-        message.dispatch("/7/fadein", led_fadein);
-        message.dispatch("/7/fadeout", led_fadeout);
-        message.dispatch("/7/flash", flash);
+        message.dispatch("/14/on", led_on);
+        message.dispatch("/14/off", led_off);
+        message.dispatch("/14/fadein", led_fadein);
+        message.dispatch("/14/fadeout", led_fadeout);
+        message.dispatch("/14/flash", flash);
         message.dispatch("/all/on", led_on);
         message.dispatch("/all/off", led_off);
         message.dispatch("/all/fadein", led_fadein);

@@ -9,7 +9,7 @@ void led_on(OSCMessage &msg) {
   if(TRIGGER == 1){
     Serial.println("LED ON");
     for(int i = 1; i < NUM_LEDS; i++) {
-      // let's set an led value
+//       let's set an led value
       leds[i] = CHSV(HUE, SATURATION, BRIGHTNESS);
       FastLED.show();
     }
@@ -31,7 +31,7 @@ void led_off(OSCMessage &msg) {
 
 void led_fadein(OSCMessage &msg) {
   TRIGGER = msg.getInt(0);
-  SECOND = msg.getInt(1);
+  SECOND = msg.getFloat(1);
   int MAX_BRIGHTNESS = msg.getInt(2);
   HUE = msg.getInt(3);
   SATURATION = msg.getInt(4);
@@ -43,7 +43,7 @@ void led_fadein(OSCMessage &msg) {
         leds[i] = CHSV(HUE, SATURATION, BRIGHTNESS);
         FastLED.show();
         BRIGHTNESS = BRIGHTNESS + 1;
-        FastLED.delay(SECOND * 1000 / 256);
+        FastLED.delay(SECOND * 1000 / MAX_BRIGHTNESS);
       }
     }
     for(int i = 1; i < NUM_LEDS; i++) {
@@ -57,7 +57,8 @@ void led_fadein(OSCMessage &msg) {
 
 void led_fadeout(OSCMessage &msg) {
   TRIGGER = msg.getInt(0);
-  SECOND = msg.getInt(1);
+  SECOND = msg.getFloat(1);
+  int MAX_BRIGHTNESS = BRIGHTNESS;
   if(TRIGGER == 1){
     Serial.println("LED FADEOUT");
     while(BRIGHTNESS > 0){
@@ -66,7 +67,7 @@ void led_fadeout(OSCMessage &msg) {
         leds[i] = CHSV(HUE, SATURATION, BRIGHTNESS);
         BRIGHTNESS = BRIGHTNESS - 1;
         FastLED.show();
-        FastLED.delay(SECOND * 1000 / 256);
+        FastLED.delay(SECOND * 1000 / MAX_BRIGHTNESS);
       }
     }
     for(int i = 1; i < NUM_LEDS; i++) {
