@@ -1,17 +1,17 @@
 /*
  *  mizunomi.tokyo <843@mizunomi.tokyo>
  *  Copyright (C) 2018 Kazumi Egawa <arnerican.f0otboy@gmail.com>
- *  
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
- *  
+ *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
@@ -22,14 +22,14 @@
 #include <FastLED.h>
 
 // WiFi network name and password:
-const char * networkName = "elecom2g-egapyon-1";
-const char * networkPswd = "egaegapyonpyon";
+const char * networkName = ""; //set Wi-Fi SSID
+const char * networkPswd = ""; //set Wi-Fi Password
 
 //IP address to send UDP data to:
-// either use the ip address of the server or 
+// either use the ip address of the server or
 // a network broadcast address
-const char * udpAddress = "192.168.1.255";  //not need for reciever
-const int udpPort = 7000;
+const char * udpAddress = "";  //set IP
+const int udpPort = ; //set Port number
 
 //Are we currently connected?
 boolean connected = false;
@@ -51,15 +51,15 @@ int SATURATION = 255;
 //
 // THIS BALL'S ID IS 0
 //
-const int ID = 7;
-int ONOLE = ID * 25;
+const int ID = ; //set ID number
+int ONOLE = (ID - 10) * 25;
 
 void setup(){
   // Initilize hardware serial:
   Serial.begin(115200);
 
   FastLED.addLeds<NEOPIXEL,DATA_PIN>(leds, NUM_LEDS);
-  
+
   //Connect to the WiFi network
   connectToWiFi(networkName, networkPswd);
 }
@@ -68,9 +68,10 @@ void loop(){
   if(!connected){
     leds[3] = CHSV(ONOLE, 255, 50);
     FastLED.show();
-    FastLED.delay(2000);
+    FastLED.delay(1000);
     leds[3] = CHSV(0,0,0);
     FastLED.show();
+    FastLED.delay(1000);
   }
   else{
     OSCMessage message;
@@ -81,16 +82,11 @@ void loop(){
         message.fill(udp.read());
       }
       if (!message.hasError()) {
-        message.dispatch("/7/on", led_on);
-        message.dispatch("/7/off", led_off);
-        message.dispatch("/7/fadein", led_fadein);
-        message.dispatch("/7/fadeout", led_fadeout);
-        message.dispatch("/7/flash", flash);
-        message.dispatch("/all/on", led_on);
-        message.dispatch("/all/off", led_off);
-        message.dispatch("/all/fadein", led_fadein);
-        message.dispatch("/all/fadeout", led_fadeout);
-        message.dispatch("/all/flash", flash);
+        message.dispatch("/on", led_on);
+        message.dispatch("/off", led_off);
+        message.dispatch("/fadein", led_fadein);
+        message.dispatch("/fadeout", led_fadeout);
+        message.dispatch("/flash", flash);
         message.empty();
       }
     }
@@ -104,7 +100,7 @@ void connectToWiFi(const char * ssid, const char * pwd){
   WiFi.disconnect(true);
   //register event handler
   WiFi.onEvent(WiFiEvent);
-  
+
   //Initiate connection
   WiFi.begin(ssid, pwd);
 
